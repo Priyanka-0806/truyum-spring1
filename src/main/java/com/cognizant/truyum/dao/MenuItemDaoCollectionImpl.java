@@ -4,39 +4,60 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.cognizant.truyum.model.MenuItem;
-import com.cognizant.truyum.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.stereotype.Component;
 
+import com.cognizant.truyum.model.MenuItem;
+
+@Component
+@ImportResource("classpath:spring-config.xml")
 public class MenuItemDaoCollectionImpl implements MenuItemDao {
 
+	@Autowired
 	private List<MenuItem> menuItemList;
 
-	public MenuItemDaoCollectionImpl(List<MenuItem> menuItemList) {
+	public List<MenuItem> getMenuItemList() {
+		return menuItemList;
+	}
 
+	public void setMenuItemList(final List<MenuItem> menuItemList) {
+		this.menuItemList = menuItemList;
+	}
+
+	/**
+	 * No argument constructor for aiding in the creation of bean
+	 */
+	public MenuItemDaoCollectionImpl() {
+		super();
+	}
+
+	/**
+	 * Single argument Constructor
+	 * 
+	 * @param menuItemList
+	 */
+	public MenuItemDaoCollectionImpl(final List<MenuItem> menuItemList) {
 		super();
 		this.menuItemList = menuItemList;
 	}
 
-	public List<MenuItem> getMenuItemList() {
-
-		return menuItemList;
-	}
-
-	public void setMenuItemList(List<MenuItem> menuItemList) {
-
-		this.menuItemList = menuItemList;
-	}
-
+	/**
+	 * For getting MenuItem List in view of Administrator
+	 */
 	public List<MenuItem> getMenuItemListAdmin() {
 
 		return menuItemList;
 	}
 
+	/**
+	 * For getting MenuItem List in view of Customer
+	 */
 	public List<MenuItem> getMenuItemListCustomer() {
-		List<MenuItem> customerItemList = new ArrayList<>();
-		Date currDate = new DateUtil().convertToDate("20/10/2020");
+		final List<MenuItem> customerItemList = new ArrayList<>();
+		final Date currDate = new Date();
 
-		for (MenuItem item : menuItemList) {
+		for (final MenuItem item : menuItemList) {
 			if (item.isActive() && currDate.after(item.getDateOfLaunch())) {
 				customerItemList.add(item);
 			}
@@ -44,9 +65,13 @@ public class MenuItemDaoCollectionImpl implements MenuItemDao {
 		return customerItemList;
 	}
 
-	public void modifyMenuItem(MenuItem menuItem) {
+	/**
+	 * 
+	 * @param menuItemList The Item to be modified
+	 */
+	public void modifyMenuItem(final MenuItem menuItem) {
 
-		for (MenuItem eachItem : menuItemList) {
+		for (final MenuItem eachItem : menuItemList) {
 			if (menuItem.equals(eachItem)) {
 				eachItem.setId(menuItem.getId());
 				eachItem.setName(menuItem.getName());
@@ -55,21 +80,20 @@ public class MenuItemDaoCollectionImpl implements MenuItemDao {
 				eachItem.setDateOfLaunch(menuItem.getDateOfLaunch());
 				eachItem.setCategory(menuItem.getCategory());
 				eachItem.setFreeDelivery(menuItem.isFreeDelivery());
-//				eachItem = menuItem;
 				return;
 			}
 		}
 		menuItemList.add(menuItem);
 	}
 
-	public MenuItem getMenuItem(long menuItemId) {
-
-		for (MenuItem menuItem : menuItemList) {
+	public MenuItem getMenuItem(final long menuItemId) {
+		MenuItem item = null;
+		for (final MenuItem menuItem : menuItemList) {
 			if (menuItem.getId() == menuItemId) {
-				return menuItem;
+				item = menuItem;
 			}
 		}
-		return null;
+		return item;
 	}
 
 }

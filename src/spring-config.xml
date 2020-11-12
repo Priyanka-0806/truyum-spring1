@@ -19,14 +19,16 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
-	<!-- factory bean for date -->
+	<context:annotation-config />
+
 	<bean id="sdf" class="java.text.SimpleDateFormat">
 		<constructor-arg value="dd/MM/yyyy" />
 	</bean>
+
 	<bean id="sandwich" class="com.cognizant.truyum.model.MenuItem">
 		<property name="id" value="1" />
 		<property name="name" value="Sandwich" />
-		<property name="price" value="99.00" />
+		<property name="price" value="99.0" />
 		<property name="active" value="true" />
 		<property name="dateOfLaunch">
 			<bean factory-bean="sdf" factory-method="parse">
@@ -36,10 +38,11 @@
 		<property name="category" value="Main Course" />
 		<property name="freeDelivery" value="true" />
 	</bean>
+
 	<bean id="burger" class="com.cognizant.truyum.model.MenuItem">
 		<property name="id" value="2" />
 		<property name="name" value="Burger" />
-		<property name="price" value="129.00" />
+		<property name="price" value="129.0" />
 		<property name="active" value="true" />
 		<property name="dateOfLaunch">
 			<bean factory-bean="sdf" factory-method="parse">
@@ -49,6 +52,7 @@
 		<property name="category" value="Main Course" />
 		<property name="freeDelivery" value="false" />
 	</bean>
+
 	<bean id="pizza" class="com.cognizant.truyum.model.MenuItem">
 		<property name="id" value="3" />
 		<property name="name" value="Pizza" />
@@ -62,21 +66,22 @@
 		<property name="category" value="Main Course" />
 		<property name="freeDelivery" value="false" />
 	</bean>
-	<bean id="frenchfries" class="com.cognizant.truyum.model.MenuItem">
+
+	<bean id="fries" class="com.cognizant.truyum.model.MenuItem">
 		<property name="id" value="4" />
-		<property name="name" value="Frenh Fries" />
+		<property name="name" value="French Fries" />
 		<property name="price" value="57.0" />
-		<property name="active" value="true" />
+		<property name="active" value="false" />
 		<property name="dateOfLaunch">
 			<bean factory-bean="sdf" factory-method="parse">
 				<constructor-arg value="02/07/2017" />
 			</bean>
 		</property>
-		<property name="category" value="Main Course" />
+		<property name="category" value="Starters" />
 		<property name="freeDelivery" value="true" />
 	</bean>
-	<bean id="chocolatebrownie"
-		class="com.cognizant.truyum.model.MenuItem">
+
+	<bean id="brownie" class="com.cognizant.truyum.model.MenuItem">
 		<property name="id" value="5" />
 		<property name="name" value="Chocolate Brownie" />
 		<property name="price" value="32.0" />
@@ -86,9 +91,75 @@
 				<constructor-arg value="02/11/2022" />
 			</bean>
 		</property>
-		<property name="category" value="Main Course" />
+		<property name="category" value="Desert" />
 		<property name="freeDelivery" value="true" />
 	</bean>
 
+	<bean id="menuItemList" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="sandwich" />
+				<ref bean="burger" />
+				<ref bean="pizza" />
+				<ref bean="fries" />
+				<ref bean="brownie" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="menuItemDaoCollectionImpl"
+		class="com.cognizant.truyum.dao.MenuItemDaoCollectionImpl">
+		<property name="menuItemList">
+			<ref bean="menuItemList" />
+		</property>
+	</bean>
+
+	<bean id="menuItemService"
+		class="com.cognizant.truyum.service.MenuItemService"></bean>
+
+	<bean id="menuItemsInCart1" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="menuItemsInCart2" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="sandwich" />
+				<ref bean="pizza" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="cart1" class="com.cognizant.truyum.model.Cart">
+		<property name="menuItemList" ref="menuItemsInCart1"/>
+		<property name="total" value="0"/>
+	</bean>
+	
+	<bean id="cart2" class="com.cognizant.truyum.model.Cart">
+		<property name="menuItemList" ref="menuItemsInCart2"/>
+		<property name="total" value="0"/>
+	</bean>
+
+	<bean id="cartDaoMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="1" value-ref="cart1"/>
+				<entry key="2" value-ref="cart2"/>
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<bean id="cartDaoCollectionImpl"
+		class="com.cognizant.truyum.dao.CartDaoCollectionImpl">
+		<property name="userCarts">
+			<ref bean="cartDaoMap" />
+		</property>
+	</bean>
+
+	<bean id="cartService"
+		class="com.cognizant.truyum.service.CartService"></bean>
 
 </beans>

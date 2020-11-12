@@ -1,15 +1,17 @@
 package com.cognizant.truyum.dao;
 
-@SuppressWarnings("serial")
 public class CartEmptyException extends Exception {
-	// private String message;
 
+	private static final long serialVersionUID = 100L;
+
+	// Constructs a new exception with {@code null} as its detail message.
 	public CartEmptyException() {
 		super();
 	}
 
-	// @Override
-	// public String getMessage() {
-	// return message;
-	// }
+	// Constructs a new exception with the specified detail message.
+	public CartEmptyException(final String message) {
+		super(message);
+	}
+
 }
