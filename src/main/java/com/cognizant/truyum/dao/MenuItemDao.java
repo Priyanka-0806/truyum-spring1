@@ -1,28 +1,55 @@
 package com.cognizant.truyum.dao;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
+
 import com.cognizant.truyum.model.MenuItem;
 
+/**
+ * 
+ * Interface for maintaining and performing operations
+ *         on (Master)MENU ITEMS
+ */
 public interface MenuItemDao {
-
-	// To get all the menu items in the view of Administrator
-
-	List<MenuItem> getMenuItemListAdmin();
-
-	// To get all the menu items in the view of Customer
-
-	List<MenuItem> getMenuItemListCustomer();
-
-	// To Modify any menu item present in the MenuItemList
-
-	void modifyMenuItem(MenuItem menuItem);
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public List<MenuItem> getMenuItemListAdmin() throws ClassNotFoundException, IOException, SQLException;
 
 	/**
-	 * To return any menu Item from the Menu Item List
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public List<MenuItem> getMenuItemListCustomer() throws ClassNotFoundException, IOException, SQLException;
+
+	/**
+	 * 
+	 * @param menuitem
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public void modifyMenuItem(MenuItem menuitem)
+			throws ClassNotFoundException, IOException, SQLException, ParseException;
+
+	/**
 	 * 
 	 * @param menuItemId
-	 * @return {@code MenuItem}
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
 	 */
-	MenuItem getMenuItem(long menuItemId);
+	public MenuItem getMenuItem(long menuItemId) throws ClassNotFoundException, IOException, SQLException;
 
 }

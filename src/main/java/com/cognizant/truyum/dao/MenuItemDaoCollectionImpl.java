@@ -4,18 +4,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Component;
 
 import com.cognizant.truyum.model.MenuItem;
 
 @Component
-@ImportResource("classpath:spring-config.xml")
+@ImportResource("spring.xml")
+/**
+ * 
+ *  Implements MenuItemDao Interface
+ */
 public class MenuItemDaoCollectionImpl implements MenuItemDao {
-
-	@Autowired
+	/**
+	 * List Of MenuItems("Sandwich..")
+	 */
 	private List<MenuItem> menuItemList;
+
+	/**
+	 * Default Constructor
+	 */
+	public MenuItemDaoCollectionImpl() {
+		super();
+	}
 
 	public List<MenuItem> getMenuItemList() {
 		return menuItemList;
@@ -25,75 +36,64 @@ public class MenuItemDaoCollectionImpl implements MenuItemDao {
 		this.menuItemList = menuItemList;
 	}
 
-	/**
-	 * No argument constructor for aiding in the creation of bean
-	 */
-	public MenuItemDaoCollectionImpl() {
-		super();
-	}
-
-	/**
-	 * Single argument Constructor
-	 * 
-	 * @param menuItemList
-	 */
-	public MenuItemDaoCollectionImpl(final List<MenuItem> menuItemList) {
-		super();
-		this.menuItemList = menuItemList;
-	}
-
-	/**
-	 * For getting MenuItem List in view of Administrator
-	 */
 	public List<MenuItem> getMenuItemListAdmin() {
-
 		return menuItemList;
+
 	}
 
 	/**
-	 * For getting MenuItem List in view of Customer
+	 * Returns list of MenuItems whose date of launch is before current date
+	 * 
+	 * @return
 	 */
 	public List<MenuItem> getMenuItemListCustomer() {
-		final List<MenuItem> customerItemList = new ArrayList<>();
-		final Date currDate = new Date();
-
-		for (final MenuItem item : menuItemList) {
-			if (item.isActive() && currDate.after(item.getDateOfLaunch())) {
-				customerItemList.add(item);
+		final List<MenuItem> customermenu = new ArrayList<MenuItem>();
+		final Date current = new Date();
+		for (final MenuItem menuItem : menuItemList) {
+			if (menuItem.getDateOfLaunch().getTime() <= current.getTime() && menuItem.isActive()) {
+				customermenu.add(menuItem);
 			}
 		}
-		return customerItemList;
+
+		return customermenu;
+
 	}
 
 	/**
+	 * Gets the details of modified menuItem from user Checks for id match Then
+	 * details of the menuItem is changed
 	 * 
-	 * @param menuItemList The Item to be modified
+	 * @param menuItem
 	 */
 	public void modifyMenuItem(final MenuItem menuItem) {
-
-		for (final MenuItem eachItem : menuItemList) {
-			if (menuItem.equals(eachItem)) {
-				eachItem.setId(menuItem.getId());
-				eachItem.setName(menuItem.getName());
-				eachItem.setPrice(menuItem.getPrice());
-				eachItem.setActive(menuItem.isActive());
-				eachItem.setDateOfLaunch(menuItem.getDateOfLaunch());
-				eachItem.setCategory(menuItem.getCategory());
-				eachItem.setFreeDelivery(menuItem.isFreeDelivery());
-				return;
+		for (final MenuItem mitem : menuItemList) {
+			if (mitem.equals(menuItem)) {
+				mitem.setName(menuItem.getName());
+				mitem.setCategory(menuItem.getCategory());
+				mitem.setDateOfLaunch(menuItem.getDateOfLaunch());
+				mitem.setFreeDelivery(menuItem.isFreeDelivery());
+				mitem.setPrice(menuItem.getPrice());
+				mitem.setActive(menuItem.isActive());
 			}
 		}
-		menuItemList.add(menuItem);
 	}
 
-	public MenuItem getMenuItem(final long menuItemId) {
-		MenuItem item = null;
-		for (final MenuItem menuItem : menuItemList) {
-			if (menuItem.getId() == menuItemId) {
-				item = menuItem;
-			}
+	/**
+	 * Takes input of menuItemId and returns that menuItem from the list of
+	 * MenuItems
+	 * 
+	 * @param menuItemId
+	 * @return
+	 */
+	public MenuItem getMenuItem(final long menuItemId)
+
+	{
+		for (final MenuItem menuitem : menuItemList) {
+			if (menuitem.getId() == menuItemId)
+				return menuitem;
 		}
-		return item;
+		return null;
+
 	}
 
 }

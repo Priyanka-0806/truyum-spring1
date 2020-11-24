@@ -1,5 +1,8 @@
 package com.cognizant.dao;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 import com.cognizant.truyum.dao.CartDao;
@@ -8,56 +11,68 @@ import com.cognizant.truyum.dao.CartEmptyException;
 import com.cognizant.truyum.model.MenuItem;
 
 public class CartDaoCollectionImplTest {
-
-	public static CartDao cartDao = new CartDaoCollectionImpl();
-
-	public static void main(String[] args) {
-
+	/**
+	 *  
+	 * @param args
+	 * @throws ParseException
+	 * @throws CartEmptyException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public static void main(String[] args)
+			throws ParseException, CartEmptyException, ClassNotFoundException, IOException, SQLException {
 		testAddCartItem();
-		System.out.println();
 		testGetAllCartItems();
-		System.out.println();
 		testRemoveCartItem();
 	}
 
-	private static void testRemoveCartItem() {
-
-		cartDao.removeCartItem(1, 1);
-		List<MenuItem> cartItemList;
-		try {
-			cartItemList = cartDao.getAllCartItems(1);
-			cartItemList.forEach(System.out::println);
-		} catch (CartEmptyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	private static void testGetAllCartItems() {
-
-
-		try {
-			List<MenuItem> allCartItems = cartDao.getAllCartItems(1);
-			allCartItems.forEach(System.out::println);
-		} catch (CartEmptyException e) {
-
-			e.printStackTrace();
-		}
+	/**
+	 * 
+	 * @throws ParseException
+	 * @throws CartEmptyException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public static void testAddCartItem()
+			throws ParseException, CartEmptyException, ClassNotFoundException, IOException, SQLException {
+		CartDao cartDao = new CartDaoCollectionImpl();
+		cartDao.addCartItem(1, 4);
+		final List<MenuItem> menuItemList = cartDao.getAllCartItems(1);
+		menuItemList.forEach(System.out::println);
 
 	}
 
-	private static void testAddCartItem() {
+	/**
+	 * 
+	 * @throws ParseException
+	 * @throws CartEmptyException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public static void testGetAllCartItems()
+			throws ParseException, CartEmptyException, ClassNotFoundException, IOException, SQLException {
+		final CartDao cartDao = new CartDaoCollectionImpl();
+		final List<MenuItem> menuItem = cartDao.getAllCartItems(1);
+		menuItem.forEach(System.out::println);
 
-
-		cartDao.addCartItem(1,1);
-		try {
-			List<MenuItem> cartItemList = cartDao.getAllCartItems(1);
-			cartItemList.forEach(System.out::println);
-		} catch (CartEmptyException e) {
-
-			e.printStackTrace();
-		}
 	}
 
+	/**
+	 * 
+	 * @throws ParseException
+	 * @throws CartEmptyException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public static void testRemoveCartItem()
+			throws ParseException, CartEmptyException, ClassNotFoundException, IOException, SQLException {
+		CartDao cartDao = new CartDaoCollectionImpl();
+		cartDao.removeCartItem(1, 4);
+		testGetAllCartItems();
+
+	}
 }

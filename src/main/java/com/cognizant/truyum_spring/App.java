@@ -1,19 +1,37 @@
 package com.cognizant.truyum_spring;
+
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.cognizant.truyum.model.MenuItem;
+import com.cognizant.truyum.service.MenuItemService;
+
 /**
- * 
- * @author Priyanka Nath
+ * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws ClassNotFoundException, IOException, SQLException
     {
-        AppliactionContext ctx= new ClassPathXmlApplicationContext("spring-config.xml");
-        List<MenuItem> menuItem=ctx.getBean("menuItem");
-    }
+        ApplicationContext app = new ClassPathXmlApplicationContext("spring.xml");
+        List<MenuItem> menuItems=(List<MenuItem>) app.getBean("menuItems");
+        for(MenuItem item : menuItems)
+        {
+        	System.out.println(item);
+        }
+        MenuItemService ms = (MenuItemService) app.getBean("MenuItemService");
+        List<MenuItem> ls = ms.getMenuItemListAdmin();
+        for(MenuItem item : ls)
+        {
+        	System.out.println(item);
+        }
+        
+        
+        
+}
 }

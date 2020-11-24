@@ -4,77 +4,119 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.cognizant.truyum.model.MenuItem;
 
 /**
- * 
- * @author Priyanka Nath
+ * @author Advaid Gireesan
  *
  */
 
 public class MenuItemServiceTest {
-
-	MenuItemService menuItemService;
+	/**
+	 * 
+	 */
+	private MenuItemService menuItemService;
 
 	@Before
+	/**
+	 * 
+	 */
 	public void initializeService() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.cognizant.truyum");
 		context.refresh();
 		menuItemService = context.getBean(MenuItemService.class);
+		context.close();
+
 	}
 
 	@Test
-	public void testGetMenuItemListAdminSize() {
-		assertEquals(5, menuItemService.getMenuItemListAdmin().size());
+	/**
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void testGetMenuItemListAdminSize() throws ClassNotFoundException, IOException, SQLException {
+		final List<MenuItem> menuList = menuItemService.getMenuItemListAdmin();
+		assertEquals(5, menuList.size());
+
 	}
 
 	@Test
-	public void testGetMenuItemListAdminContainsSandwich() {
-		boolean hasSandwich = false;
-		for (MenuItem item : menuItemService.getMenuItemListAdmin()) {
-			if (item.getName().equalsIgnoreCase("Sandwich")) {
-				hasSandwich = true;
-				break;
-			}
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void testGetMenuItemListAdminContainsSandwich() throws ClassNotFoundException, IOException, SQLException {
+		final List<MenuItem> menuList = menuItemService.getMenuItemListAdmin();
+		boolean result = false;
+		for (final MenuItem m : menuList) {
+			if (m.getName().contentEquals("Sandwich"))
+				result = true;
 		}
-		assertTrue(hasSandwich);
+		assertTrue(result);
+
 	}
 
 	@Test
-	public void testGetMenuItemListCustomerSize() {
-		assertEquals(3, menuItemService.getMenuItemListCustomer().size());
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void testGetMenuItemListCustomerSize() throws ClassNotFoundException, IOException, SQLException {
+
+		final List<MenuItem> menuItemList = menuItemService.getMenuItemListCustomer();
+
+		assertEquals(3, menuItemList.size());
+
 	}
 
 	@Test
-	public void testGetMenuItemListCustomerNotContainsFrenchFries() {
-		boolean hasSandwich = false;
-		for (MenuItem item : menuItemService.getMenuItemListCustomer()) {
-			if (item.getName().equalsIgnoreCase("French Fries")) {
-				hasSandwich = true;
-				break;
-			}
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void testGetMenuItemListCustomerNotContainsFrenchFries()
+			throws ClassNotFoundException, IOException, SQLException {
+		final List<MenuItem> menuList = menuItemService.getMenuItemListCustomer();
+		boolean result = false;
+		for (final MenuItem m : menuList) {
+			if (m.getName().contentEquals("French Fries"))
+				result = true;
 		}
-		assertFalse(hasSandwich);
+		assertFalse(result);
+
 	}
 
 	@Test
-	public void testGetMenuItem() {
-		assertEquals(1, menuItemService.getMenuItem(1).getId());
-	}
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void testGetMenuItem() throws ClassNotFoundException, IOException, SQLException {
 
-	@Test
-	public void testModifyMenuItem() {
-		assertFalse(150.0 == menuItemService.getMenuItem(1).getPrice());
-		MenuItem modifieditem = new MenuItem(1, "Sandwich", 150, true, new Date(), "Main Course", false);
-		menuItemService.editMenuItem(modifieditem);
-		assertTrue(150.0 == menuItemService.getMenuItem(1).getPrice());
+		MenuItem menuItem = menuItemService.getMenuItem(1);
+		menuItem = menuItemService.getMenuItem(1);
+		assertTrue(menuItem.getName().equals("Sandwich"));
+
 	}
 
 }

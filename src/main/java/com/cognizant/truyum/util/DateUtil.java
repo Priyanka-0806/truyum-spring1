@@ -4,20 +4,29 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 
+ * 
+ *
+ */
 public class DateUtil {
-	public Date convertToDate(String date) {
-		
-		Date parsedDate = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public Date convertToDate(final String date) {
+		Date dateObj = new Date();
 		try {
-			parsedDate = formatter.parse(date);
-			
+			final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		  
+		
+			dateObj = formatter.parse(date);
 		} catch (ParseException e) {
 			
-			System.out.println("Date not in correct Format");
 			e.printStackTrace();
-		}
-		return parsedDate;
+		}  
+		  return dateObj;
 	}
+	
 }

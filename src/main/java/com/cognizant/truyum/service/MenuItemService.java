@@ -1,29 +1,26 @@
 package com.cognizant.truyum.service;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.cognizant.truyum.dao.MenuItemDao;
-import com.cognizant.truyum.dao.MenuItemDaoCollectionImpl;
 import com.cognizant.truyum.model.MenuItem;
-
-/**
- * 
- * @author Priyanka Nath
- *
- */
 
 @Service("menuItemService")
 public class MenuItemService {
 
+	@Autowired
+	/**
+	 * 
+	 */
 	private MenuItemDao menuItemDao;
 
-	@Autowired
-	public void setMenuItemDao(MenuItemDao menuItemDao) {
+	public void setMenuItemDao(final MenuItemDao menuItemDao) {
 		this.menuItemDao = menuItemDao;
 	}
 
@@ -31,23 +28,56 @@ public class MenuItemService {
 		return menuItemDao;
 	}
 
-	public List<MenuItem> getMenuItemListAdmin() {
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public List<MenuItem> getMenuItemListAdmin() throws ClassNotFoundException, IOException, SQLException {
 
 		return menuItemDao.getMenuItemListAdmin();
+
 	}
 
-	public List<MenuItem> getMenuItemListCustomer() {
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public List<MenuItem> getMenuItemListCustomer() throws ClassNotFoundException, IOException, SQLException {
 
 		return menuItemDao.getMenuItemListCustomer();
 	}
 
-	public MenuItem getMenuItem(long menuItemId) {
+	/**
+	 * 
+	 * @param menuItem
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public void modifyMenuItem(final MenuItem menuItem)
+			throws ClassNotFoundException, IOException, SQLException, ParseException {
+		menuItemDao.modifyMenuItem(menuItem);
 
-		return menuItemDao.getMenuItem(menuItemId);
 	}
 
-	public void editMenuItem(MenuItem menuItem) {
-		menuItemDao.modifyMenuItem(menuItem);
+	/**
+	 * 
+	 * @param menuitemId
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public MenuItem getMenuItem(final long menuitemId) throws ClassNotFoundException, IOException, SQLException {
+		return menuItemDao.getMenuItem(menuitemId);
+
 	}
 
 }

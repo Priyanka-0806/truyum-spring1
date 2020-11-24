@@ -1,101 +1,130 @@
 package com.cognizant.truyum.dao;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.stereotype.Component;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.cognizant.truyum.model.Cart;
 import com.cognizant.truyum.model.MenuItem;
+import com.cognizant.truyum.service.MenuItemService;
 
-@Component
-@ImportResource("classpath:spring-config.xml")
-
+/**
+ * 
+ * 
+ * Implements CARTDAO interface
+ */
 public class CartDaoCollectionImpl implements CartDao {
-
-	@Autowired
-	@Qualifier("cartDaoMap")
+	/**
+	 * Map
+	 */
 	private Map<Long, Cart> userCarts;
+	/**
+	 * MenuItemDao Object
+	 */
+	private MenuItemDao menuItemDao;
 
-	public Map<Long, Cart> getUserCarts() {
-		return userCarts;
+	public MenuItemDao getMenuItemDao() {
+		return menuItemDao;
 	}
 
+	public void setMenuItemDao(final MenuItemDao menuItemDao) {
+		this.menuItemDao = menuItemDao;
+	}
+
+	public Map<Long, Cart> getUserCarts() {
+		return this.userCarts;
+	}
+
+	/**
+	 * @param userCarts
+	 */
 	public void setUserCarts(final Map<Long, Cart> userCarts) {
 		this.userCarts = userCarts;
 	}
 
-	public CartDaoCollectionImpl() {
-		super();
-	}
-
-	// @param userCarts
-
-	public CartDaoCollectionImpl(final Map<Long, Cart> userCarts) {
-		super();
-		this.userCarts = userCarts;
-	}
-
 	@Override
-
-	public void addCartItem(final long userId, final long menuItemId) {
-
-		final MenuItemDao menuItemDao = new MenuItemDaoCollectionImpl();
-		final MenuItem item = menuItemDao.getMenuItem(menuItemId);
-
+	/**
+	 * Depending on the userId and menuItemId the corresponding menuItem is added in
+	 * cart against the UserID
+	 * 
+	 * @param userId
+	 * @param menuItemId
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void addCartItem(final long userId, final long menuItemId) throws ClassNotFoundException, IOException, SQLException {
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+		final MenuItemService menutItemService = (MenuItemService) ctx.getBean("menuItemService");
+		final MenuItem menuItem = menutItemService.getMenuItem(menuItemId);
 		if (userCarts.containsKey(userId)) {
-			final List<MenuItem> menuItemList = userCarts.get(userId).getMenuItemList();
-			menuItemList.add(item);
-			userCarts.get(userId).setMenuItemList(menuItemList);
-		} else {
-			final List<MenuItem> newUserMenuList = new ArrayList<>();
-			newUserMenuList.add(item);
-			final Cart cart = new Cart(newUserMenuList);
-			userCarts.put(userId, cart);
+			final List<MenuItem> list = userCarts.get(userId).getMenuItemList();
+
+			list.add(menuItem);
+			userCarts.get(userId).setMenuItemList(list);
+
 		}
 
+		else {
+			final List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+			menuItemList.add(menuItem);
+			final Cart cart = new Cart(menuItemList);
+			userCarts.put(userId, cart);
+
+		}
+		ctx.close();
 	}
 
+	/**
+	 * Return list of menuItems for the given UserId
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws CartEmptyException
+	 */
 	@Override
-
 	public List<MenuItem> getAllCartItems(final long userId) throws CartEmptyException {
 
 		final Cart cart = userCarts.get(userId);
-		final List<MenuItem> allCartItems = cart.getMenuItemList();
-		if (allCartItems == null || allCartItems.isEmpty()) {
+		final List<MenuItem> allItems = cart.getMenuItemList();
+		if (allItems.isEmpty()) {
 			throw new CartEmptyException();
 		} else {
 			double total = 0;
-			for (final MenuItem item : allCartItems) {
-				total += item.getPrice();
+			for (final MenuItem menuItem : allItems) {
+				total = total + menuItem.getPrice();
 			}
-
 			cart.setTotal(total);
 		}
-		return allCartItems;
+		return allItems;
+
 	}
 
+	/**
+	 * Removes a particular item from the given Users Cart
+	 * 
+	 * @param userId
+	 * @param menuItemId
+	 */
 	@Override
-
 	public void removeCartItem(final long userId, final long menuItemId) {
-
 		final Cart cart = userCarts.get(userId);
-		final List<MenuItem> allCartItems = cart.getMenuItemList();
-		MenuItem itemToRemove = null;
+		final List<MenuItem> allItems = cart.getMenuItemList();
 
-		for (final MenuItem item : allCartItems) {
-			if (item.getId() == menuItemId) {
-				itemToRemove = item;
-				break;
+		MenuItem remove = null;
+		for (final MenuItem menuitem : allItems) {
+			if (menuitem.getId() == menuItemId) {
+				remove = menuitem;
 			}
 		}
-		allCartItems.remove(itemToRemove);
-		cart.setMenuItemList(allCartItems);
-		userCarts.put(userId, cart);
-	}
+		allItems.remove(remove);
+		final Cart cart1 = userCarts.get(userId);
+		cart1.setMenuItemList(allItems);
 
+		userCarts.put(userId, cart1);
+	}
 }
